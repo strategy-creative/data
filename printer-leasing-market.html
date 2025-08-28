@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,227 +7,661 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @layer base {
-            :root {
-                --chart-1: oklch(0.646 0.222 41.116);
-                --chart-2: oklch(0.6 0.118 184.704);
-                --chart-3: oklch(0.398 0.07 227.392);
-                --chart-4: oklch(0.828 0.189 84.429);
-                --chart-5: oklch(0.769 0.188 70.08);
-            }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 221.2 83.2% 53.3%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96%;
+            --secondary-foreground: 222.2 84% 4.9%;
+            --muted: 210 40% 96%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 210 40% 96%;
+            --accent-foreground: 222.2 84% 4.9%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 221.2 83.2% 53.3%;
+            --radius: 0.5rem;
+            --chart-1: 221.2 83.2% 53.3%;
+            --chart-2: 215.4 16.3% 46.9%;
+            --chart-3: 142.1 76.2% 36.3%;
+            --chart-4: 47.9 95.8% 53.1%;
+            --chart-5: 346.8 77.2% 49.8%;
+        }
+
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 217.2 91.2% 59.8%;
+            --primary-foreground: 222.2 84% 4.9%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 224.3 76.3% 94.1%;
+        }
+
+        * {
+            border-color: hsl(var(--border));
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
         .card {
-            @apply bg-white rounded-lg shadow-md border border-gray-200 p-6;
+            background-color: hsl(var(--card));
+            color: hsl(var(--card-foreground));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
         }
+
+        .card:hover {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
         .metric-card {
-            @apply bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 text-center;
+            background: linear-gradient(135deg, hsl(var(--primary) / 0.05) 0%, hsl(var(--primary) / 0.1) 100%);
+            border: 1px solid hsl(var(--primary) / 0.2);
+            border-radius: var(--radius);
+            transition: all 0.2s ease-in-out;
         }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
         .metric-value {
-            @apply text-3xl font-bold text-blue-600 mb-2;
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 2.5rem;
+            color: hsl(var(--primary));
+            margin-bottom: 0.5rem;
         }
+
         .metric-label {
-            @apply text-sm text-blue-800 uppercase tracking-wide;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
+
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 320px;
             width: 100%;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, hsl(var(--muted) / 0.3) 0%, hsl(var(--muted) / 0.1) 100%);
+            border-radius: var(--radius);
+            padding: 1rem;
+            border: 1px solid hsl(var(--border));
         }
+
         .citation {
-            @apply text-xs text-gray-500 mt-2;
+            font-size: 0.75rem;
+            color: hsl(var(--muted-foreground));
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: hsl(var(--muted) / 0.5);
+            border-radius: calc(var(--radius) - 2px);
+            border-left: 3px solid hsl(var(--primary));
         }
+
         .source-link {
-            @apply text-blue-600 hover:text-blue-800 underline;
+            color: hsl(var(--primary));
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+            transition: color 0.2s ease-in-out;
         }
+
+        .source-link:hover {
+            color: hsl(var(--primary) / 0.8);
+        }
+
         .table-container {
-            @apply overflow-x-auto rounded-lg border border-gray-200;
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid hsl(var(--border));
+            background-color: hsl(var(--card));
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         }
+
         .table {
-            @apply min-w-full divide-y divide-gray-200;
+            width: 100%;
+            border-collapse: collapse;
         }
+
         .table-header {
-            @apply bg-gray-50;
+            background-color: hsl(var(--muted));
         }
+
         .table-header-cell {
-            @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid hsl(var(--border));
         }
+
         .table-body {
-            @apply bg-white divide-y divide-gray-200;
+            background-color: hsl(var(--card));
         }
+
         .table-row {
-            @apply hover:bg-gray-50;
+            transition: background-color 0.2s ease-in-out;
         }
+
+        .table-row:hover {
+            background-color: hsl(var(--muted) / 0.5);
+        }
+
         .table-cell {
-            @apply px-6 py-4 whitespace-nowrap text-sm;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid hsl(var(--border));
         }
+
         .table-cell-primary {
-            @apply font-medium text-gray-900;
+            font-weight: 600;
+            color: hsl(var(--foreground));
         }
+
         .table-cell-secondary {
-            @apply text-gray-500;
+            color: hsl(var(--muted-foreground));
         }
+
         .insight-card {
-            @apply p-4 rounded-lg border;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid;
+            transition: all 0.2s ease-in-out;
         }
+
+        .insight-card:hover {
+            transform: translateY(-1px);
+        }
+
         .insight-card-blue {
-            @apply bg-blue-50 border-blue-200;
+            background-color: hsl(221.2 83.2% 53.3% / 0.05);
+            border-color: hsl(221.2 83.2% 53.3% / 0.2);
         }
+
         .insight-card-green {
-            @apply bg-green-50 border-green-200;
+            background-color: hsl(142.1 76.2% 36.3% / 0.05);
+            border-color: hsl(142.1 76.2% 36.3% / 0.2);
         }
+
         .insight-card-purple {
-            @apply bg-purple-50 border-purple-200;
+            background-color: hsl(262.1 83.3% 57.8% / 0.05);
+            border-color: hsl(262.1 83.3% 57.8% / 0.2);
         }
+
         .insight-title {
-            @apply font-semibold mb-2;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
         }
-        .insight-text {
-            @apply text-sm;
-        }
+
         .insight-title-blue {
-            @apply text-blue-900;
+            color: hsl(221.2 83.2% 53.3%);
         }
+
         .insight-title-green {
-            @apply text-green-900;
+            color: hsl(142.1 76.2% 36.3%);
         }
+
         .insight-title-purple {
-            @apply text-purple-900;
+            color: hsl(262.1 83.3% 57.8%);
         }
+
+        .insight-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
         .insight-text-blue {
-            @apply text-blue-700;
+            color: hsl(221.2 83.2% 53.3% / 0.8);
         }
+
         .insight-text-green {
-            @apply text-green-700;
+            color: hsl(142.1 76.2% 36.3% / 0.8);
         }
+
         .insight-text-purple {
-            @apply text-purple-700;
+            color: hsl(262.1 83.3% 57.8% / 0.8);
         }
+
         .sources-section {
-            @apply bg-gray-50 rounded-lg p-6 mt-8;
+            background-color: hsl(var(--muted) / 0.3);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid hsl(var(--border));
         }
+
         .source-item {
-            @apply text-sm text-gray-600 mb-2;
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
         }
+
         .source-number {
-            @apply font-mono text-gray-500;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            color: hsl(var(--primary));
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            border: 1px solid hsl(var(--border));
+            background-color: hsl(var(--secondary));
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: hsl(var(--secondary-foreground));
+            line-height: 1;
+        }
+
+        .badge-primary {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-color: hsl(var(--primary));
+        }
+
+        .badge-secondary {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+            border-color: hsl(var(--border));
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.875rem;
+        }
+
+        .trend-card {
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .trend-card:hover {
+            transform: translateY(-1px);
+        }
+
+        .trend-card-yellow {
+            background-color: hsl(47.9 95.8% 53.1% / 0.05);
+            border-color: hsl(47.9 95.8% 53.1% / 0.2);
+        }
+
+        .trend-card-indigo {
+            background-color: hsl(221.2 83.2% 53.3% / 0.05);
+            border-color: hsl(221.2 83.2% 53.3% / 0.2);
+        }
+
+        .trend-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .trend-title-yellow {
+            color: hsl(47.9 95.8% 53.1%);
+        }
+
+        .trend-title-indigo {
+            color: hsl(221.2 83.2% 53.3%);
+        }
+
+        .trend-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .trend-text-yellow {
+            color: hsl(47.9 95.8% 53.1% / 0.8);
+        }
+
+        .trend-text-indigo {
+            color: hsl(221.2 83.2% 53.3% / 0.8);
+        }
+
+        .data-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: hsl(var(--primary) / 0.05);
+            border-radius: var(--radius);
+            border: 1px solid hsl(var(--primary) / 0.2);
+        }
+
+        .data-note-text {
+            font-size: 0.875rem;
+            color: hsl(var(--primary) / 0.9);
+            line-height: 1.5;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: hsl(var(--primary) / 0.1);
+            color: hsl(var(--primary));
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid hsl(var(--primary) / 0.2);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, hsl(var(--primary) / 0.05) 0%, hsl(var(--primary) / 0.1) 100%);
+            border: 1px solid hsl(var(--primary) / 0.2);
+            border-radius: var(--radius);
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--chart-3)));
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .metric-card:hover::before {
+            background: linear-gradient(90deg, hsl(var(--chart-3)), hsl(var(--primary)));
+        }
+
+        @media (max-width: 768px) {
+            .metric-value {
+                font-size: 1.875rem;
+                line-height: 2.25rem;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .table-container {
+                font-size: 0.75rem;
+            }
+            
+            .table-cell, .table-header-cell {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Enhanced focus states */
+        .card:focus-within {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+        }
+
+        .source-link:focus {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <h1 class="text-3xl font-bold text-gray-900">Christchurch B2B Market Analysis</h1>
-            <p class="text-gray-600 mt-2">Printer/Photocopier Leasing Market Dashboard</p>
-            <p class="text-sm text-gray-500 mt-1">Data Sources: IBISWorld, Figure.NZ, Government Procurement, Industry Reports (2024-2025)</p>
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Christchurch B2B Market Analysis</h1>
+                    <p class="text-gray-600 mt-2 text-lg">Printer/Photocopier Leasing Market Dashboard</p>
+                    <div class="header-badge">
+                        📊 Data Sources: IBISWorld, Figure.NZ, Government Procurement, Industry Reports (2024-2025)
+                    </div>
+                </div>
+                <div class="mt-4 sm:mt-0">
+                    <div class="badge badge-primary">Market Intelligence</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Key Metrics -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="metric-card">
+        <div class="section-header">
+            <h2 class="section-title">Market Overview</h2>
+            <p class="section-description">Key performance indicators and market size metrics for Christchurch B2B printer leasing</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 fade-in">
+            <div class="metric-card p-6 text-center">
                 <div class="metric-value">NZD $133.6M</div>
                 <div class="metric-label">Total Addressable Market</div>
-                <div class="citation">Source: IBISWorld [12][16][17]</div>
+                <div class="citation">
+                    <strong>Source:</strong> IBISWorld [12][16][17]
+                </div>
             </div>
-            <div class="metric-card">
+            <div class="metric-card p-6 text-center">
                 <div class="metric-value">NZD $60.1M</div>
                 <div class="metric-label">Current Market Size</div>
-                <div class="citation">Source: IBISWorld [17][18][16]</div>
+                <div class="citation">
+                    <strong>Source:</strong> IBISWorld [17][18][16]
+                </div>
             </div>
-            <div class="metric-card">
+            <div class="metric-card p-6 text-center">
                 <div class="metric-value">NZD $73.5M</div>
                 <div class="metric-label">Growth Potential</div>
-                <div class="citation">Source: IBISWorld [17][18][16]</div>
+                <div class="citation">
+                    <strong>Source:</strong> IBISWorld [17][18][16]
+                </div>
             </div>
-            <div class="metric-card">
+            <div class="metric-card p-6 text-center">
                 <div class="metric-value">45%</div>
                 <div class="metric-label">Market Penetration</div>
-                <div class="citation">Source: Industry Reports [17][18][16]</div>
+                <div class="citation">
+                    <strong>Source:</strong> Industry Reports [17][18][16]
+                </div>
             </div>
         </div>
 
         <!-- Charts Row 1 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="section-header slide-up">
+            <h2 class="section-title">Market Analysis</h2>
+            <p class="section-description">Visual representation of market penetration, segments, and revenue distribution</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 slide-up">
             <!-- Market Penetration Pie Chart -->
-            <div class="card">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Market Penetration</h3>
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Market Penetration</h3>
+                    <div class="badge badge-secondary">Pie Chart</div>
+                </div>
                 <div class="chart-container">
                     <canvas id="penetrationChart"></canvas>
                 </div>
                 <div class="citation">
-                    Data Source: IBISWorld Market Research [12][16][17] | 
+                    <strong>Data Source:</strong> IBISWorld Market Research [12][16][17] | 
                     <a href="https://www.ibisworld.com/new-zealand/industry/printing/166/" class="source-link" target="_blank">View Source</a>
                 </div>
             </div>
 
             <!-- Business Segments Bar Chart -->
-            <div class="card">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Market Share by Business Segment</h3>
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Market Share by Business Segment</h3>
+                    <div class="badge badge-secondary">Bar Chart</div>
+                </div>
                 <div class="chart-container">
                     <canvas id="segmentsChart"></canvas>
                 </div>
                 <div class="citation">
-                    Data Source: Figure.NZ Business Demographics [18] | 
+                    <strong>Data Source:</strong> Figure.NZ Business Demographics [18] | 
                     <a href="https://figure.nz/chart/ahwIqAsrrOUSfxB7-E2zPuowIznzkFOWM" class="source-link" target="_blank">View Source</a>
                 </div>
             </div>
         </div>
 
         <!-- Charts Row 2 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <!-- Revenue Distribution -->
-            <div class="card">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Revenue by Segment (NZD $M)</h3>
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Revenue by Segment (NZD $M)</h3>
+                    <div class="badge badge-secondary">Bar Chart</div>
+                </div>
                 <div class="chart-container">
                     <canvas id="revenueChart"></canvas>
                 </div>
                 <div class="citation">
-                    Data Source: IBISWorld & Industry Analysis [16][18] | 
+                    <strong>Data Source:</strong> IBISWorld & Industry Analysis [16][18] | 
                     <a href="https://www.ibisworld.com/new-zealand/market-size/printing/166/" class="source-link" target="_blank">View Source</a>
                 </div>
             </div>
 
             <!-- Entity Count vs Revenue Efficiency -->
-            <div class="card">
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Entity Count vs Revenue per Entity</h3>
+            <div class="card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Entity Count vs Revenue per Entity</h3>
+                    <div class="badge badge-secondary">Line Chart</div>
+                </div>
                 <div class="chart-container">
                     <canvas id="efficiencyChart"></canvas>
                 </div>
                 <div class="citation">
-                    Data Source: Figure.NZ & Industry Reports [18][13][14] | 
+                    <strong>Data Source:</strong> Figure.NZ & Industry Reports [18][13][14] | 
                     <a href="https://figure.nz/chart/ahwIqAsrrOUSfxB7-E2zPuowIznzkFOWM" class="source-link" target="_blank">View Source</a>
                 </div>
             </div>
         </div>
 
         <!-- Strategic Insights -->
-        <div class="card mb-8">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Strategic Insights</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="section-header">
+            <h2 class="section-title">Strategic Insights</h2>
+            <p class="section-description">Key business strategies and market opportunities based on data analysis</p>
+        </div>
+        
+        <div class="card p-8 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="insight-card insight-card-blue">
-                    <h4 class="insight-title insight-title-blue">Volume Play Strategy</h4>
-                    <p class="insight-text insight-text-blue">Target zero and 1-5 employee segments for market share growth</p>
-                    <div class="citation">Based on 73% of businesses having 0-5 employees [18]</div>
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                        <h4 class="insight-title insight-title-blue">Volume Play Strategy</h4>
+                    </div>
+                    <p class="insight-text insight-text-blue">Target zero and 1-5 employee segments for market share growth and volume-based revenue</p>
+                    <div class="citation">
+                        <strong>Based on:</strong> 73% of businesses having 0-5 employees [18]
+                    </div>
                 </div>
                 <div class="insight-card insight-card-green">
-                    <h4 class="insight-title insight-title-green">Value Play Strategy</h4>
-                    <p class="insight-text insight-text-green">Focus on 6-19 and 50+ employee segments for revenue maximization</p>
-                    <div class="citation">Higher per-entity spend: $6K-$35K vs $800-$2.5K [13][14]</div>
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <h4 class="insight-title insight-title-green">Value Play Strategy</h4>
+                    </div>
+                    <p class="insight-text insight-text-green">Focus on 6-19 and 50+ employee segments for revenue maximization and higher margins</p>
+                    <div class="citation">
+                        <strong>Based on:</strong> Higher per-entity spend: $6K-$35K vs $800-$2.5K [13][14]
+                    </div>
                 </div>
                 <div class="insight-card insight-card-purple">
-                    <h4 class="insight-title insight-title-purple">Specialization</h4>
-                    <p class="insight-text insight-text-purple">Government & Education sector offers stable, contract-based opportunities</p>
-                    <div class="citation">PTAS panel procurement required [11][19][20]</div>
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                        <h4 class="insight-title insight-title-purple">Specialization</h4>
+                    </div>
+                    <p class="insight-text insight-text-purple">Government & Education sector offers stable, contract-based opportunities with predictable revenue</p>
+                    <div class="citation">
+                        <strong>Based on:</strong> PTAS panel procurement required [11][19][20]
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Detailed Data Table -->
-        <div class="card">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Detailed Segment Analysis</h3>
+        <div class="section-header">
+            <h2 class="section-title">Detailed Segment Analysis</h2>
+            <p class="section-description">Comprehensive breakdown of market segments with revenue and entity counts</p>
+        </div>
+        
+        <div class="card p-6 mb-12">
             <div class="table-container">
                 <table class="table">
                     <thead class="table-header">
@@ -295,28 +729,48 @@
         </div>
 
         <!-- Market Trends Section -->
-        <div class="card mb-8">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Market Trends & Insights</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <h4 class="font-semibold text-yellow-900 mb-2">Industry Context</h4>
-                    <p class="text-sm text-yellow-700 mb-2">NZ printing industry valued at $1.4 billion (2025), declining 2.2% p.a. due to digitization</p>
-                    <div class="citation">Source: IBISWorld [12] | <a href="https://www.ibisworld.com/new-zealand/industry/printing/166/" class="source-link" target="_blank">View Source</a></div>
+        <div class="section-header">
+            <h2 class="section-title">Market Trends & Insights</h2>
+            <p class="section-description">Industry context and emerging patterns in the B2B leasing market</p>
+        </div>
+        
+        <div class="card p-8 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="trend-card trend-card-yellow">
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                        <h4 class="trend-title trend-title-yellow">Industry Context</h4>
+                    </div>
+                    <p class="trend-text trend-text-yellow">NZ printing industry valued at $1.4 billion (2025), declining 2.2% p.a. due to digitization and evolving business needs</p>
+                    <div class="citation">
+                        <strong>Source:</strong> IBISWorld [12] | 
+                        <a href="https://www.ibisworld.com/new-zealand/industry/printing/166/" class="source-link" target="_blank">View Source</a>
+                    </div>
                 </div>
-                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                    <h4 class="font-semibold text-indigo-900 mb-2">Leasing Penetration</h4>
-                    <p class="text-sm text-indigo-700 mb-2">67-80% of B2B office equipment transactions now occur on lease or managed print agreements</p>
-                    <div class="citation">Source: Industry Reports [15][13][14] | <a href="https://www.ricoh.co.nz/industries/ricoh-financial-services" class="source-link" target="_blank">View Source</a></div>
+                <div class="trend-card trend-card-indigo">
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-indigo-500 rounded-full mr-3"></div>
+                        <h4 class="trend-title trend-title-indigo">Leasing Penetration</h4>
+                    </div>
+                    <p class="trend-text trend-text-indigo">67-80% of B2B office equipment transactions now occur on lease or managed print agreements, indicating strong market adoption</p>
+                    <div class="citation">
+                        <strong>Source:</strong> Industry Reports [15][13][14] | 
+                        <a href="https://www.ricoh.co.nz/industries/ricoh-financial-services" class="source-link" target="_blank">View Source</a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Sources Section -->
         <div class="sources-section">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Data Sources & Citations</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="section-header">
+                <h2 class="section-title">Data Sources & Citations</h2>
+                <p class="section-description">Comprehensive list of all data sources used in this market analysis</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-3">Primary Market Data</h4>
+                    <h4 class="font-semibold text-gray-900 mb-4 text-lg">Primary Market Data</h4>
                     <div class="source-item">
                         <span class="source-number">[12]</span> IBISWorld, "Printing in New Zealand – Market Size Statistics," 2025-06-07
                         <a href="https://www.ibisworld.com/new-zealand/industry/printing/166/" class="source-link" target="_blank">View</a>
@@ -335,7 +789,7 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="font-semibold text-gray-900 mb-3">Industry & Government Sources</h4>
+                    <h4 class="font-semibold text-gray-900 mb-4 text-lg">Industry & Government Sources</h4>
                     <div class="source-item">
                         <span class="source-number">[11]</span> New Zealand Government Procurement, "Print technology and associated services," 2023-08-30
                         <a href="https://www.procurement.govt.nz/contracts/print-technology-and-associated-services/" class="source-link" target="_blank">View</a>
@@ -354,11 +808,13 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p class="text-sm text-blue-800">
+            
+            <div class="data-note">
+                <p class="data-note-text">
                     <strong>Note:</strong> All data represents 2024-2025 estimates based on the latest available industry reports, 
                     government statistics, and market research. Market penetration figures are derived from industry analysis 
-                    and may vary based on specific market conditions and timing.
+                    and may vary based on specific market conditions and timing. This dashboard follows academic citation standards 
+                    for transparency and data verification.
                 </p>
             </div>
         </div>
@@ -377,7 +833,14 @@
             };
 
             // Chart colors using Shadcn chart color variables
-            const colors = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))', '#06B6D4'];
+            const colors = [
+                'hsl(var(--chart-1))', 
+                'hsl(var(--chart-2))', 
+                'hsl(var(--chart-3))', 
+                'hsl(var(--chart-4))', 
+                'hsl(var(--chart-5))', 
+                '#06B6D4'
+            ];
 
             // Helper function to safely create charts
             function createChart(canvasId, chartConfig) {
@@ -411,9 +874,22 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            }
                         },
                         tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'hsl(var(--chart-1))',
+                            borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
                                     return context.label + ': NZD $' + context.parsed + 'M';
@@ -433,7 +909,8 @@
                         label: 'Market Share (%)',
                         data: marketData.marketShare,
                         backgroundColor: colors,
-                        borderWidth: 0
+                        borderWidth: 0,
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -442,6 +919,13 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'hsl(var(--chart-1))',
+                            borderWidth: 1
                         }
                     },
                     scales: {
@@ -449,7 +933,19 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Market Share (%)'
+                                text: 'Market Share (%)',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
@@ -465,7 +961,8 @@
                         label: 'Revenue (NZD $M)',
                         data: marketData.revenue,
                         backgroundColor: colors,
-                        borderWidth: 0
+                        borderWidth: 0,
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -474,6 +971,13 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'hsl(var(--chart-1))',
+                            borderWidth: 1
                         }
                     },
                     scales: {
@@ -481,7 +985,19 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Revenue (NZD $M)'
+                                text: 'Revenue (NZD $M)',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
@@ -500,7 +1016,10 @@
                             yAxisID: 'y',
                             borderColor: 'hsl(var(--chart-1))',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            fill: true
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
                         },
                         {
                             label: 'Revenue per Entity (NZD $)',
@@ -508,7 +1027,10 @@
                             yAxisID: 'y1',
                             borderColor: 'hsl(var(--chart-2))',
                             backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            fill: true
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
                         }
                     ]
                 },
@@ -521,7 +1043,22 @@
                     },
                     plugins: {
                         legend: {
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'hsl(var(--chart-1))',
+                            borderWidth: 1
                         }
                     },
                     scales: {
@@ -529,7 +1066,14 @@
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Business Segments'
+                                text: 'Business Segments',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false
                             }
                         },
                         y: {
@@ -538,7 +1082,14 @@
                             position: 'left',
                             title: {
                                 display: true,
-                                text: 'Number of Entities'
+                                text: 'Number of Entities',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
                             }
                         },
                         y1: {
@@ -547,10 +1098,15 @@
                             position: 'right',
                             title: {
                                 display: true,
-                                text: 'Revenue per Entity (NZD $)'
+                                text: 'Revenue per Entity (NZD $)',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
                             },
                             grid: {
                                 drawOnChartArea: false,
+                                color: 'rgba(0, 0, 0, 0.1)'
                             },
                         }
                     }
